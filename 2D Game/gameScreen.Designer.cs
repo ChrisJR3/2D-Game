@@ -28,20 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            this.gameLoop = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
+            // 
+            // gameLoop
+            // 
+            this.gameLoop.Enabled = true;
+            this.gameLoop.Tick += new System.EventHandler(this.gameLoop_Tick);
             // 
             // gameScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.BackColor = System.Drawing.Color.Gray;
             this.Name = "gameScreen";
-            this.Size = new System.Drawing.Size(1100, 461);
+            this.Size = new System.Drawing.Size(1170, 506);
             this.Load += new System.EventHandler(this.GameScreen_Load);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.GameScreen_Paint);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.gameScreen_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.gameScreen_KeyUp);
+            this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.GameScreen_PreviewKeyDown);
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.Timer gameLoop;
     }
 }

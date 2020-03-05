@@ -7,31 +7,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace _2D_Game
 {
     public partial class gameScreen : UserControl
     {
-        //For keeping track of the trails
-        List<int> greenTrail = new List<int>();
-        List<int> redTrail = new List<int>();
-
         //Brushes
         SolidBrush greenBrush = new SolidBrush(Color.Green);
         SolidBrush redBrush = new SolidBrush(Color.Red);
+        SolidBrush greenHeroBrush = new SolidBrush(Color.White);
+        SolidBrush redHeroBrush = new SolidBrush(Color.Black);
+        SolidBrush penBrush = new SolidBrush(Color.Blue);
 
-        //player 1 (green) control keys
-        Boolean wKeyDown, aKeyDown, sKeyDown, dKeyDown;
-
-        //player 2 (red) control keys
-        Boolean leftArrowDown, rightArrowDown, upArrowDown, downArrowDown;
+        //Pens
+        Font winnerFont = new Font("Old Standard TT", 16, FontStyle.Bold);
 
         //creating variables that apply to both players
         public static int playerSpeed = 5;
-        int boxSize = 10;
-        //string p1Direction;
-        //string p2Direction;
+        int boxSize = 20;
         int p1X, p1Y, p2X, p2Y;
+        string p1Direction = "up";
+        string p2Direction = "down";
+        Boolean endGame = false;
 
         //creating the characters in the movement class
         movement greenHero;
@@ -46,31 +44,33 @@ namespace _2D_Game
         public void onStart()
         {
             //set intial values
-            p1X = this.Height;
-            p1Y = 0;
-            p2X = 0;
-            p2Y = this.Width;
+            p1X = 20;
+            p1Y = this.Height - 50;
+            p2X = this.Width - 50;
+            p2Y = 20;
 
-            greenHero = new movement(p1X, p1Y, boxSize);
-            redHero = new movement(p2X, p2Y, boxSize);
+            greenHero = new movement(p1X, p1Y, boxSize, playerSpeed);
+            redHero = new movement(p2X, p2Y, boxSize, playerSpeed);
+
+            //Cursor.Hide(); //hides cursor            
         }
 
-        private void gameScreen_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        private void GameScreen_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
             //Green rider button presses (Player 1)
             switch (e.KeyCode)
             {
                 case Keys.W:
-                    wKeyDown = true;
+                    p1Direction = "up";
                     break;
                 case Keys.A:
-                    aKeyDown = true;
+                    p1Direction = "left";
                     break;
                 case Keys.S:
-                    sKeyDown = true;
+                    p1Direction = "down";
                     break;
                 case Keys.D:
-                    dKeyDown = true;
+                    p1Direction = "right";
                     break;
             }
 
@@ -78,118 +78,112 @@ namespace _2D_Game
             switch (e.KeyCode)
             {
                 case Keys.Up:
-                    upArrowDown = true;
+                    p2Direction = "up";
                     break;
                 case Keys.Left:
-                    leftArrowDown = true;
+                    p2Direction = "left";
                     break;
                 case Keys.Down:
-                    downArrowDown = true;
+                    p2Direction = "down";
                     break;
                 case Keys.Right:
-                    rightArrowDown = true;
+                    p2Direction = "right";
                     break;
             }
         }
 
-        private void gameScreen_KeyUp(object sender, KeyEventArgs e)
-        {
-            //Green rider button releases (Player 1)
-            switch (e.KeyCode)
-            {
-                case Keys.W:
-                    wKeyDown = false;
-                    break;
-                case Keys.A:
-                    aKeyDown = false;
-                    break;
-                case Keys.S:
-                    sKeyDown = false;
-                    break;
-                case Keys.D:
-                    dKeyDown = false;
-                    break;
-            }
+        private void gameScreen_KeyDown(object sender, KeyEventArgs e){}
 
-            //Red rider button releases (Player 2)
-            switch (e.KeyCode)
-            {
-                case Keys.Up:
-                    upArrowDown = false;
-                    break;
-                case Keys.Left:
-                    leftArrowDown = false;
-                    break;
-                case Keys.Down:
-                    downArrowDown = false;
-                    break;
-                case Keys.Right:
-                    rightArrowDown = false;
-                    break;
-            }
-        }
+        private void gameScreen_KeyUp(object sender, KeyEventArgs e){}
 
         private void gameLoop_Tick(object sender, EventArgs e)
         {
-            //deciding the direction of Green rider (Player 1)
-            if (wKeyDown)
+            //moving the Green rider (Player 1)
+            greenHero.Move(p1Direction);
+
+            //moving the Red rider (Player 2)
+            redHero.Move(p2Direction);
+
+            //Collisions
+            Rectangle greenHeroRec = new Rectangle(greenHero.x, greenHero.y, greenHero.size, greenHero.size);
+            Rectangle redHeroRec = new Rectangle(redHero.x, redHero.y, redHero.size, redHero.size);
+
+            if (greenHeroRec.IntersectsWith(redHeroRec)){gameOver("Tie");}
+
+            foreach (Point t in greenHero.playerTrail)
             {
-                greenHero.Move("up", greenTrail);
-            }
-            else if (aKeyDown)
-            {
-                greenHero.Move("left", greenTrail);
-            }
-            else if (sKeyDown)
-            {
-                greenHero.Move("down", greenTrail);
-            }
-            else if (dKeyDown)
-            {
-                greenHero.Move("right", greenTrail);
+                Rectangle greenTrail = new Rectangle(t.X, t.Y, greenHero.size/2, greenHero.size/2);
+
+                //if (greenHeroRec.IntersectsWith(greenTrail) && ) {gameOver("Red Rider");}
+
+                if (redHeroRec.IntersectsWith(greenTrail)) {gameOver("Green Rider");}
             }
 
-            //deciding the direction of Red rider (Player 2)
-            if (upArrowDown)
+            foreach (Point t in redHero.playerTrail)
             {
-                redHero.Move("up", redTrail);
+                Rectangle redTrail = new Rectangle(t.X, t.Y, redHero.size/2, redHero.size/2);
+
+                //if (redHeroRec.IntersectsWith(redTrail) && ) {gameOver("Green Rider");}
+
+                if (greenHeroRec.IntersectsWith(redTrail)) {gameOver("Red Rider");}
             }
-            else if (leftArrowDown)
+
+            if (greenHero.x == 0 || greenHero.x == this.Width || greenHero.y == 0 || greenHero.y == this.Height) {gameOver("Red Rider");}
+
+            if (redHero.x == 0 || redHero.x == this.Width || redHero.y == 0 || redHero.y == this.Height) {gameOver("Green Rider");}           
+            
+            //Check if the game has ended
+            if (endGame == true)
             {
-                redHero.Move("left", redTrail);
-            }
-            else if (downArrowDown)
-            {
-                redHero.Move("down", redTrail);
-            }
-            else if (rightArrowDown)
-            {
-                redHero.Move("right", redTrail);
+                Form f = this.FindForm();
+                f.Controls.Remove(this);
+
+                Mainscreen ms = new Mainscreen();
+                f.Controls.Add(ms);
+                ms.Focus();
             }
 
             Refresh();
         }
 
+        public void gameOver(string winner)
+        {
+            //creates Graphics
+            Graphics e = this.CreateGraphics();
+
+            //if greenHero (P1) wins
+            if (winner == "Green Rider") {e.DrawString("Green Rider Wins!", winnerFont, penBrush, this.Width/2, this.Height/2);}
+
+            //if redHero (P2) wins
+            else if (winner == "Red Rider") {e.DrawString("Red Rider Wins!", winnerFont, penBrush, this.Width / 2, this.Height / 2);}
+
+            //if it is a tie
+            else {e.DrawString("It's a tie!", winnerFont, penBrush, this.Width / 2, this.Height / 2);}
+
+            Thread.Sleep(3000);
+
+            //Close screen and reopen Mainscreen
+            endGame = true;
+        }
+
         private void GameScreen_Load(object sender, EventArgs e)
         {
-             
+
         }
 
         private void GameScreen_Paint(object sender, PaintEventArgs e)
         {
-            //Green hero (p1)
-            e.Graphics.FillRectangle(greenBrush, greenHero.x, greenHero.y, greenHero.size, greenHero.size);
-
-            //Red hero (p2)
-            e.Graphics.FillRectangle(redBrush, redHero.x, redHero.y, redHero.size, redHero.size);
-
             //Green trail
-            foreach (movement t in greenTrail)
-            {
-
-            }
+            foreach (Point t in greenHero.playerTrail) {e.Graphics.FillRectangle(greenBrush, t.X, t.Y, greenHero.size/2, greenHero.size/2);}
 
             //Red trail
+            foreach (Point t in redHero.playerTrail) {e.Graphics.FillRectangle(redBrush, t.X, t.Y, redHero.size/2, redHero.size/2);}
+
+            //Green hero (p1)
+            e.Graphics.FillRectangle(greenHeroBrush, greenHero.x, greenHero.y, greenHero.size, greenHero.size);
+
+            //Red hero (p2)
+            e.Graphics.FillRectangle(redHeroBrush, redHero.x, redHero.y, redHero.size, redHero.size);
         }
     }
 }

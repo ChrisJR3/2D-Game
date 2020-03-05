@@ -3,41 +3,45 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace _2D_Game
 {
     class movement
     {
+        //creating ints
+        public int x, y, size, speed;
 
-        public int x, y, size;
+        public List<Point> playerTrail = new List<Point>();
 
-        public movement(int _x, int _y, int _size)
+        public movement(int _x, int _y, int _size, int _speed)
         {
             x = _x;
             y = _y;
-            size = _size; 
+            size = _size;
+            speed = _speed;
         }
 
-        public List<int> Move(string direction, List<int> playerTrail)
+        public void Move(string direction)
         {
             if (direction == "up")
             {
-                x = x + gameScreen.playerSpeed;
+                y = y - gameScreen.playerSpeed;
             }
             else if (direction == "down")
             {
-                x = x - gameScreen.playerSpeed;
+                y = y + gameScreen.playerSpeed;
             }
             else if (direction == "right")
             {
-                y = y + gameScreen.playerSpeed;
+                x = x + gameScreen.playerSpeed;
             }
             else if (direction == "left")
             {
-                y = y - gameScreen.playerSpeed;
+                x = x - gameScreen.playerSpeed;
             }
 
-            return playerTrail;
+            playerTrail.Add(new Point(x+5, y+5));
         }
     }
 }

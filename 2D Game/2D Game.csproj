@@ -58,6 +58,12 @@
     <Compile Include="gameScreen.Designer.cs">
       <DependentUpon>gameScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="Mainscreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Mainscreen.Designer.cs">
+      <DependentUpon>Mainscreen.cs</DependentUpon>
+    </Compile>
     <Compile Include="movement.cs" />
     <Compile Include="movement2.cs" />
     <Compile Include="Program.cs" />
@@ -67,6 +73,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="gameScreen.resx">
       <DependentUpon>gameScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mainscreen.resx">
+      <DependentUpon>Mainscreen.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

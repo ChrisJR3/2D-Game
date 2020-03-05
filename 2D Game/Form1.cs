@@ -18,14 +18,10 @@ namespace _2D_Game
         }
 
         private void Form1_Load(object sender, EventArgs e)
-        {        
-        }
-
-        private void StartGameButton_1_Click(object sender, EventArgs e)
         {
-            //Opens main gamescreen 
-            gameScreen gs = new gameScreen();
-            this.Controls.Add(gs);
+            //Opens Mainscreen 
+            Mainscreen ms = new Mainscreen();
+            this.Controls.Add(ms);
         }
     }
 }
