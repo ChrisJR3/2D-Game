@@ -35,6 +35,7 @@
             // gameLoop
             // 
             this.gameLoop.Enabled = true;
+            this.gameLoop.Interval = 20;
             this.gameLoop.Tick += new System.EventHandler(this.gameLoop_Tick);
             // 
             // gameScreen
@@ -42,6 +43,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
+            this.DoubleBuffered = true;
             this.Name = "gameScreen";
             this.Size = new System.Drawing.Size(1170, 506);
             this.Load += new System.EventHandler(this.GameScreen_Load);

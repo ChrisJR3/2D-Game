@@ -24,9 +24,10 @@ namespace _2D_Game
         Font winnerFont = new Font("Old Standard TT", 16, FontStyle.Bold);
 
         //creating variables that apply to both players
-        public static int playerSpeed = 5;
+        public static int playerSpeed = 7;
         int boxSize = 20;
         int p1X, p1Y, p2X, p2Y;
+        int wallWidth = 3;
         string p1Direction = "up";
         string p2Direction = "down";
         Boolean endGame = false;
@@ -52,7 +53,7 @@ namespace _2D_Game
             greenHero = new movement(p1X, p1Y, boxSize, playerSpeed);
             redHero = new movement(p2X, p2Y, boxSize, playerSpeed);
 
-            //Cursor.Hide(); //hides cursor            
+            Cursor.Hide(); //hides cursor            
         }
 
         private void GameScreen_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -61,16 +62,16 @@ namespace _2D_Game
             switch (e.KeyCode)
             {
                 case Keys.W:
-                    p1Direction = "up";
+                    if (p1Direction != "down") { p1Direction = "up"; }
                     break;
                 case Keys.A:
-                    p1Direction = "left";
+                    if (p1Direction != "right") { p1Direction = "left"; }
                     break;
                 case Keys.S:
-                    p1Direction = "down";
+                    if (p1Direction != "up") { p1Direction = "down"; }
                     break;
                 case Keys.D:
-                    p1Direction = "right";
+                    if (p1Direction != "left") { p1Direction = "right"; }
                     break;
             }
 
@@ -78,16 +79,16 @@ namespace _2D_Game
             switch (e.KeyCode)
             {
                 case Keys.Up:
-                    p2Direction = "up";
+                    if (p2Direction != "down") { p2Direction = "up"; }
                     break;
                 case Keys.Left:
-                    p2Direction = "left";
+                    if (p2Direction != "right") { p2Direction = "left"; }
                     break;
                 case Keys.Down:
-                    p2Direction = "down";
+                    if (p2Direction != "up") { p2Direction = "down"; }
                     break;
                 case Keys.Right:
-                    p2Direction = "right";
+                    if (p2Direction != "left") { p2Direction = "right"; }
                     break;
             }
         }
@@ -104,37 +105,20 @@ namespace _2D_Game
             //moving the Red rider (Player 2)
             redHero.Move(p2Direction);
 
-            //Collisions
+            //Making the collision boxes
             Rectangle greenHeroRec = new Rectangle(greenHero.x, greenHero.y, greenHero.size, greenHero.size);
             Rectangle redHeroRec = new Rectangle(redHero.x, redHero.y, redHero.size, redHero.size);
 
-            if (greenHeroRec.IntersectsWith(redHeroRec)){gameOver("Tie");}
+            Rectangle wall1 = new Rectangle(0, 0, this.Width, wallWidth);
+            Rectangle wall2 = new Rectangle(this.Width, 0, -wallWidth, this.Height);
+            Rectangle wall3 = new Rectangle(0, this.Height, this.Width, -wallWidth);
+            Rectangle wall4 = new Rectangle(0, 0, wallWidth, this.Height);
 
-            foreach (Point t in greenHero.playerTrail)
-            {
-                Rectangle greenTrail = new Rectangle(t.X, t.Y, greenHero.size/2, greenHero.size/2);
-
-                //if (greenHeroRec.IntersectsWith(greenTrail) && ) {gameOver("Red Rider");}
-
-                if (redHeroRec.IntersectsWith(greenTrail)) {gameOver("Green Rider");}
-            }
-
-            foreach (Point t in redHero.playerTrail)
-            {
-                Rectangle redTrail = new Rectangle(t.X, t.Y, redHero.size/2, redHero.size/2);
-
-                //if (redHeroRec.IntersectsWith(redTrail) && ) {gameOver("Green Rider");}
-
-                if (greenHeroRec.IntersectsWith(redTrail)) {gameOver("Red Rider");}
-            }
-
-            if (greenHero.x == 0 || greenHero.x == this.Width || greenHero.y == 0 || greenHero.y == this.Height) {gameOver("Red Rider");}
-
-            if (redHero.x == 0 || redHero.x == this.Width || redHero.y == 0 || redHero.y == this.Height) {gameOver("Green Rider");}           
-            
             //Check if the game has ended
             if (endGame == true)
             {
+                gameLoop.Enabled = false;
+
                 Form f = this.FindForm();
                 f.Controls.Remove(this);
 
@@ -143,6 +127,123 @@ namespace _2D_Game
                 ms.Focus();
             }
 
+            if (greenHeroRec.IntersectsWith(redHeroRec)) { gameOver("Tie"); }
+            else
+            {
+                //Creating the collision checks for Green Rider (p1) 
+                if (p1Direction == "up")
+                {
+                    Rectangle greenSafteyRectangle = new Rectangle(greenHero.x, greenHero.y + (greenHero.size / 4), greenHero.size, greenHero.size);
+
+                    foreach (Point t in greenHero.playerTrail)
+                    {
+                        Rectangle greenTrail = new Rectangle(t.X, t.Y, greenHero.size / 2, greenHero.size / 2);
+
+                        if (greenTrail.IntersectsWith(greenHeroRec) && !greenTrail.IntersectsWith(greenSafteyRectangle)) { gameOver("Red Rider"); }
+
+                        if (greenTrail.IntersectsWith(redHeroRec)) { gameOver("Green Rider"); }
+                    }
+                }
+                else if (p1Direction == "down")
+                {
+                    Rectangle greenSafteyRectangle = new Rectangle(greenHero.x, greenHero.y - (greenHero.size / 4), greenHero.size, greenHero.size);
+
+                    foreach (Point t in greenHero.playerTrail)
+                    {
+                        Rectangle greenTrail = new Rectangle(t.X, t.Y, greenHero.size / 2, greenHero.size / 2);
+
+                        if (greenTrail.IntersectsWith(greenHeroRec) && !greenTrail.IntersectsWith(greenSafteyRectangle)) { gameOver("Red Rider"); }
+
+                        if (greenTrail.IntersectsWith(redHeroRec)) { gameOver("Green Rider"); }
+                    }
+                }
+                else if (p1Direction == "right")
+                {
+                    Rectangle greenSafteyRectangle = new Rectangle(greenHero.x - (greenHero.size / 4), greenHero.y, greenHero.size, greenHero.size);
+
+                    foreach (Point t in greenHero.playerTrail)
+                    {
+                        Rectangle greenTrail = new Rectangle(t.X, t.Y, greenHero.size / 2, greenHero.size / 2);
+
+                        if (greenTrail.IntersectsWith(greenHeroRec) && !greenTrail.IntersectsWith(greenSafteyRectangle)) { gameOver("Red Rider"); }
+
+                        if (greenTrail.IntersectsWith(redHeroRec)) { gameOver("Green Rider"); }
+                    }
+                }
+                else
+                {
+                    Rectangle greenSafteyRectangle = new Rectangle(greenHero.x + (greenHero.size / 4), greenHero.y, greenHero.size, greenHero.size);
+
+                    foreach (Point t in greenHero.playerTrail)
+                    {
+                        Rectangle greenTrail = new Rectangle(t.X, t.Y, greenHero.size / 2, greenHero.size / 2);
+
+                        if (greenTrail.IntersectsWith(greenHeroRec) && !greenTrail.IntersectsWith(greenSafteyRectangle)) { gameOver("Red Rider"); }
+
+                        if (greenTrail.IntersectsWith(redHeroRec)) { gameOver("Green Rider"); }
+                    }
+                }
+
+                //Creating the collision checks for Red Rider (p2)
+                if (p2Direction == "up")
+                {
+                    Rectangle redSafteyRectangle = new Rectangle(redHero.x, redHero.y + (redHero.size / 4), redHero.size, redHero.size);
+
+                    foreach (Point t in redHero.playerTrail)
+                    {
+                        Rectangle redTrail = new Rectangle(t.X, t.Y, redHero.size / 2, redHero.size / 2);
+
+                        if (redTrail.IntersectsWith(redHeroRec) && !redTrail.IntersectsWith(redSafteyRectangle)) { gameOver("Green Rider"); }
+
+                        if (redTrail.IntersectsWith(greenHeroRec)) { gameOver("Red Rider"); }
+                    }
+                }
+                else if (p2Direction == "down")
+                {
+                    Rectangle redSafteyRectangle = new Rectangle(redHero.x, redHero.y - (redHero.size / 4), redHero.size, redHero.size);
+
+                    foreach (Point t in redHero.playerTrail)
+                    {
+                        Rectangle redTrail = new Rectangle(t.X, t.Y, redHero.size / 2, redHero.size / 2);
+
+                        if (redTrail.IntersectsWith(redHeroRec) && !redTrail.IntersectsWith(redSafteyRectangle)) { gameOver("Green Rider"); }
+
+                        if (redTrail.IntersectsWith(greenHeroRec)) { gameOver("Red Rider"); }
+                    }
+                }
+                else if (p2Direction == "right")
+                {
+                    Rectangle redSafteyRectangle = new Rectangle(redHero.x - (redHero.size / 4), redHero.y, redHero.size, redHero.size);
+
+                    foreach (Point t in redHero.playerTrail)
+                    {
+                        Rectangle redTrail = new Rectangle(t.X, t.Y, redHero.size / 2, redHero.size / 2);
+
+                        if (redTrail.IntersectsWith(redHeroRec) && !redTrail.IntersectsWith(redSafteyRectangle)) { gameOver("Green Rider"); }
+
+                        if (redTrail.IntersectsWith(greenHeroRec)) { gameOver("Red Rider"); }
+                    }
+                }
+                else
+                {
+                    Rectangle redSafteyRectangle = new Rectangle(redHero.x + (redHero.size / 4), redHero.y, redHero.size, redHero.size);
+
+                    foreach (Point t in redHero.playerTrail)
+                    {
+                        Rectangle redTrail = new Rectangle(t.X, t.Y, redHero.size / 2, redHero.size / 2);
+
+                        if (redTrail.IntersectsWith(redHeroRec) && !redTrail.IntersectsWith(redSafteyRectangle)) { gameOver("Green Rider"); }
+
+                        if (redTrail.IntersectsWith(greenHeroRec)) { gameOver("Red Rider"); }
+                    }
+                }
+            }
+            
+
+            if (greenHeroRec.IntersectsWith(wall1)||greenHeroRec.IntersectsWith(wall2)||greenHeroRec.IntersectsWith(wall3)||greenHeroRec.IntersectsWith(wall4)){gameOver("Red Rider");}
+
+            if(redHeroRec.IntersectsWith(wall1)||redHeroRec.IntersectsWith(wall2)||redHeroRec.IntersectsWith(wall3)||redHeroRec.IntersectsWith(wall4)){gameOver("Green Rider");}           
+            
             Refresh();
         }
 
@@ -166,10 +267,7 @@ namespace _2D_Game
             endGame = true;
         }
 
-        private void GameScreen_Load(object sender, EventArgs e)
-        {
-
-        }
+        private void GameScreen_Load(object sender, EventArgs e){}
 
         private void GameScreen_Paint(object sender, PaintEventArgs e)
         {
@@ -184,6 +282,12 @@ namespace _2D_Game
 
             //Red hero (p2)
             e.Graphics.FillRectangle(redHeroBrush, redHero.x, redHero.y, redHero.size, redHero.size);
+
+            //Makes the walls
+            e.Graphics.FillRectangle(penBrush, 0, 0, this.Width, wallWidth);
+            e.Graphics.FillRectangle(penBrush, this.Width-wallWidth, 0, wallWidth, this.Height);
+            e.Graphics.FillRectangle(penBrush, 0, this.Height-wallWidth, this.Width, wallWidth);
+            e.Graphics.FillRectangle(penBrush, 0, 0, wallWidth, this.Height);
         }
     }
 }

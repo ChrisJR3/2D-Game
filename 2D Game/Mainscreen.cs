@@ -12,14 +12,9 @@ namespace _2D_Game
 {
     public partial class Mainscreen : UserControl
     {
-        public Mainscreen()
-        {
-            InitializeComponent();
-        }
+        public Mainscreen() {InitializeComponent();}
 
-        private void Mainscreen_Load(object sender, EventArgs e)
-        {
-        }
+        private void Mainscreen_Load(object sender, EventArgs e) { Cursor.Show(); }
 
         private void StartGameButton_1_Click(object sender, EventArgs e)
         {
@@ -31,5 +26,7 @@ namespace _2D_Game
             f.Controls.Add(gs);
             gs.Focus();
         }
+
+        private void QuitButton_Click(object sender, EventArgs e) {Application.Exit();}
     }
 }

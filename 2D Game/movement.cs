@@ -41,7 +41,7 @@ namespace _2D_Game
                 x = x - gameScreen.playerSpeed;
             }
 
-            playerTrail.Add(new Point(x+5, y+5));
+            playerTrail.Add(new Point(x+(size/4), y+(size/4)));
         }
     }
 }

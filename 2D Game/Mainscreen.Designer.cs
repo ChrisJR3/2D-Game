@@ -32,6 +32,7 @@
             this.titleLabel_3 = new System.Windows.Forms.Label();
             this.titleLabel_2 = new System.Windows.Forms.Label();
             this.titleLabel_1 = new System.Windows.Forms.Label();
+            this.quitButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // startGameButton_1
@@ -83,15 +84,29 @@
             this.titleLabel_1.TabIndex = 4;
             this.titleLabel_1.Text = "T    R";
             // 
+            // quitButton
+            // 
+            this.quitButton.Font = new System.Drawing.Font("Millenium BdEx BT", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.quitButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.quitButton.Location = new System.Drawing.Point(601, 339);
+            this.quitButton.Name = "quitButton";
+            this.quitButton.Size = new System.Drawing.Size(109, 46);
+            this.quitButton.TabIndex = 8;
+            this.quitButton.Text = "Quit?";
+            this.quitButton.UseVisualStyleBackColor = true;
+            this.quitButton.Click += new System.EventHandler(this.QuitButton_Click);
+            // 
             // Mainscreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.Controls.Add(this.quitButton);
             this.Controls.Add(this.startGameButton_1);
             this.Controls.Add(this.titleLabel_3);
             this.Controls.Add(this.titleLabel_2);
             this.Controls.Add(this.titleLabel_1);
+            this.DoubleBuffered = true;
             this.Name = "Mainscreen";
             this.Size = new System.Drawing.Size(1185, 546);
             this.Load += new System.EventHandler(this.Mainscreen_Load);
@@ -106,5 +121,6 @@
         private System.Windows.Forms.Label titleLabel_3;
         private System.Windows.Forms.Label titleLabel_2;
         private System.Windows.Forms.Label titleLabel_1;
+        private System.Windows.Forms.Button quitButton;
     }
 }
