@@ -30,7 +30,9 @@ namespace _2D_Game
         int wallWidth = 3;
         string p1Direction = "up";
         string p2Direction = "down";
-        Boolean endGame = false;
+
+        Rectangle greenSafteyRectangle;
+        Rectangle redSafteyRectangle;
 
         //creating the characters in the movement class
         movement greenHero;
@@ -109,141 +111,101 @@ namespace _2D_Game
             Rectangle greenHeroRec = new Rectangle(greenHero.x, greenHero.y, greenHero.size, greenHero.size);
             Rectangle redHeroRec = new Rectangle(redHero.x, redHero.y, redHero.size, redHero.size);
 
+            //Walls
             Rectangle wall1 = new Rectangle(0, 0, this.Width, wallWidth);
             Rectangle wall2 = new Rectangle(this.Width, 0, -wallWidth, this.Height);
             Rectangle wall3 = new Rectangle(0, this.Height, this.Width, -wallWidth);
             Rectangle wall4 = new Rectangle(0, 0, wallWidth, this.Height);
 
-            //Check if the game has ended
-            if (endGame == true)
+            //If the players hit head on 
+            if (greenHeroRec.IntersectsWith(redHeroRec))
             {
-                gameLoop.Enabled = false;
-
-                Form f = this.FindForm();
-                f.Controls.Remove(this);
-
-                Mainscreen ms = new Mainscreen();
-                f.Controls.Add(ms);
-                ms.Focus();
-            }
-
-            if (greenHeroRec.IntersectsWith(redHeroRec)) { gameOver("Tie"); }
+                gameOver("Tie");
+                return;
+            }  
+            //If player runs into another player's or their own trail
             else
             {
-                //Creating the collision checks for Green Rider (p1) 
+                //Creating the saftey rectangles for Green Rider trail (p1) 
                 if (p1Direction == "up")
                 {
-                    Rectangle greenSafteyRectangle = new Rectangle(greenHero.x, greenHero.y + (greenHero.size / 4), greenHero.size, greenHero.size);
-
-                    foreach (Point t in greenHero.playerTrail)
-                    {
-                        Rectangle greenTrail = new Rectangle(t.X, t.Y, greenHero.size / 2, greenHero.size / 2);
-
-                        if (greenTrail.IntersectsWith(greenHeroRec) && !greenTrail.IntersectsWith(greenSafteyRectangle)) { gameOver("Red Rider"); }
-
-                        if (greenTrail.IntersectsWith(redHeroRec)) { gameOver("Green Rider"); }
-                    }
+                    greenSafteyRectangle = new Rectangle(greenHero.x, greenHero.y + (greenHero.size / 4), greenHero.size, greenHero.size);
                 }
                 else if (p1Direction == "down")
                 {
-                    Rectangle greenSafteyRectangle = new Rectangle(greenHero.x, greenHero.y - (greenHero.size / 4), greenHero.size, greenHero.size);
-
-                    foreach (Point t in greenHero.playerTrail)
-                    {
-                        Rectangle greenTrail = new Rectangle(t.X, t.Y, greenHero.size / 2, greenHero.size / 2);
-
-                        if (greenTrail.IntersectsWith(greenHeroRec) && !greenTrail.IntersectsWith(greenSafteyRectangle)) { gameOver("Red Rider"); }
-
-                        if (greenTrail.IntersectsWith(redHeroRec)) { gameOver("Green Rider"); }
-                    }
+                    greenSafteyRectangle = new Rectangle(greenHero.x, greenHero.y - (greenHero.size / 4), greenHero.size, greenHero.size);
                 }
                 else if (p1Direction == "right")
                 {
-                    Rectangle greenSafteyRectangle = new Rectangle(greenHero.x - (greenHero.size / 4), greenHero.y, greenHero.size, greenHero.size);
-
-                    foreach (Point t in greenHero.playerTrail)
-                    {
-                        Rectangle greenTrail = new Rectangle(t.X, t.Y, greenHero.size / 2, greenHero.size / 2);
-
-                        if (greenTrail.IntersectsWith(greenHeroRec) && !greenTrail.IntersectsWith(greenSafteyRectangle)) { gameOver("Red Rider"); }
-
-                        if (greenTrail.IntersectsWith(redHeroRec)) { gameOver("Green Rider"); }
-                    }
+                    greenSafteyRectangle = new Rectangle(greenHero.x - (greenHero.size / 4), greenHero.y, greenHero.size, greenHero.size);
                 }
                 else
                 {
-                    Rectangle greenSafteyRectangle = new Rectangle(greenHero.x + (greenHero.size / 4), greenHero.y, greenHero.size, greenHero.size);
+                    greenSafteyRectangle = new Rectangle(greenHero.x + (greenHero.size / 4), greenHero.y, greenHero.size, greenHero.size);
+                }
 
-                    foreach (Point t in greenHero.playerTrail)
+                // check for collisons with green trail
+                foreach (Point t in greenHero.playerTrail)
+                {
+                    Rectangle greenTrail = new Rectangle(t.X, t.Y, greenHero.size / 2, greenHero.size / 2);
+
+                    if (greenTrail.IntersectsWith(greenHeroRec) && !greenTrail.IntersectsWith(greenSafteyRectangle))
                     {
-                        Rectangle greenTrail = new Rectangle(t.X, t.Y, greenHero.size / 2, greenHero.size / 2);
+                        gameOver("Red Rider");
+                        return;
+                    }
 
-                        if (greenTrail.IntersectsWith(greenHeroRec) && !greenTrail.IntersectsWith(greenSafteyRectangle)) { gameOver("Red Rider"); }
-
-                        if (greenTrail.IntersectsWith(redHeroRec)) { gameOver("Green Rider"); }
+                    if (greenTrail.IntersectsWith(redHeroRec))
+                    {
+                        gameOver("Green Rider");
+                        return;
                     }
                 }
 
-                //Creating the collision checks for Red Rider (p2)
+                //Creating the saftey rectangles for Red Rider trail (p2)
                 if (p2Direction == "up")
                 {
-                    Rectangle redSafteyRectangle = new Rectangle(redHero.x, redHero.y + (redHero.size / 4), redHero.size, redHero.size);
-
-                    foreach (Point t in redHero.playerTrail)
-                    {
-                        Rectangle redTrail = new Rectangle(t.X, t.Y, redHero.size / 2, redHero.size / 2);
-
-                        if (redTrail.IntersectsWith(redHeroRec) && !redTrail.IntersectsWith(redSafteyRectangle)) { gameOver("Green Rider"); }
-
-                        if (redTrail.IntersectsWith(greenHeroRec)) { gameOver("Red Rider"); }
-                    }
+                     redSafteyRectangle = new Rectangle(redHero.x, redHero.y + (redHero.size / 4), redHero.size, redHero.size);
                 }
                 else if (p2Direction == "down")
                 {
-                    Rectangle redSafteyRectangle = new Rectangle(redHero.x, redHero.y - (redHero.size / 4), redHero.size, redHero.size);
-
-                    foreach (Point t in redHero.playerTrail)
-                    {
-                        Rectangle redTrail = new Rectangle(t.X, t.Y, redHero.size / 2, redHero.size / 2);
-
-                        if (redTrail.IntersectsWith(redHeroRec) && !redTrail.IntersectsWith(redSafteyRectangle)) { gameOver("Green Rider"); }
-
-                        if (redTrail.IntersectsWith(greenHeroRec)) { gameOver("Red Rider"); }
-                    }
+                     redSafteyRectangle = new Rectangle(redHero.x, redHero.y - (redHero.size / 4), redHero.size, redHero.size);
                 }
                 else if (p2Direction == "right")
                 {
-                    Rectangle redSafteyRectangle = new Rectangle(redHero.x - (redHero.size / 4), redHero.y, redHero.size, redHero.size);
-
-                    foreach (Point t in redHero.playerTrail)
-                    {
-                        Rectangle redTrail = new Rectangle(t.X, t.Y, redHero.size / 2, redHero.size / 2);
-
-                        if (redTrail.IntersectsWith(redHeroRec) && !redTrail.IntersectsWith(redSafteyRectangle)) { gameOver("Green Rider"); }
-
-                        if (redTrail.IntersectsWith(greenHeroRec)) { gameOver("Red Rider"); }
-                    }
+                     redSafteyRectangle = new Rectangle(redHero.x - (redHero.size / 4), redHero.y, redHero.size, redHero.size);
                 }
                 else
                 {
-                    Rectangle redSafteyRectangle = new Rectangle(redHero.x + (redHero.size / 4), redHero.y, redHero.size, redHero.size);
+                     redSafteyRectangle = new Rectangle(redHero.x + (redHero.size / 4), redHero.y, redHero.size, redHero.size);
+                }
 
-                    foreach (Point t in redHero.playerTrail)
+                // check for collisons with red trail
+                foreach (Point t in redHero.playerTrail)
+                {
+                    Rectangle redTrail = new Rectangle(t.X, t.Y, redHero.size / 2, redHero.size / 2);
+
+                    //If red rider hits it's own trail
+                    if (redTrail.IntersectsWith(redHeroRec) && !redTrail.IntersectsWith(redSafteyRectangle))
                     {
-                        Rectangle redTrail = new Rectangle(t.X, t.Y, redHero.size / 2, redHero.size / 2);
+                        gameOver("Green Rider");
+                        return;
+                    }
 
-                        if (redTrail.IntersectsWith(redHeroRec) && !redTrail.IntersectsWith(redSafteyRectangle)) { gameOver("Green Rider"); }
-
-                        if (redTrail.IntersectsWith(greenHeroRec)) { gameOver("Red Rider"); }
+                    //If green rider hits red rider's trail
+                    if (redTrail.IntersectsWith(greenHeroRec))
+                    {
+                        gameOver("Red Rider");
+                        return;
                     }
                 }
+
             }
             
-
+            //if either rider hits the walls
             if (greenHeroRec.IntersectsWith(wall1)||greenHeroRec.IntersectsWith(wall2)||greenHeroRec.IntersectsWith(wall3)||greenHeroRec.IntersectsWith(wall4)){gameOver("Red Rider");}
+            if(redHeroRec.IntersectsWith(wall1)||redHeroRec.IntersectsWith(wall2)||redHeroRec.IntersectsWith(wall3)||redHeroRec.IntersectsWith(wall4)){gameOver("Green Rider");}
 
-            if(redHeroRec.IntersectsWith(wall1)||redHeroRec.IntersectsWith(wall2)||redHeroRec.IntersectsWith(wall3)||redHeroRec.IntersectsWith(wall4)){gameOver("Green Rider");}           
-            
             Refresh();
         }
 
@@ -251,6 +213,8 @@ namespace _2D_Game
         {
             //creates Graphics
             Graphics e = this.CreateGraphics();
+            gameLoop.Enabled = false;
+
 
             //if greenHero (P1) wins
             if (winner == "Green Rider") {e.DrawString("Green Rider Wins!", winnerFont, penBrush, this.Width/2, this.Height/2);}
@@ -261,10 +225,15 @@ namespace _2D_Game
             //if it is a tie
             else {e.DrawString("It's a tie!", winnerFont, penBrush, this.Width / 2, this.Height / 2);}
 
-            Thread.Sleep(3000);
+            Thread.Sleep(1000);
 
             //Close screen and reopen Mainscreen
-            endGame = true;
+            Form f = this.FindForm();
+            f.Controls.Remove(this);
+
+            Mainscreen ms = new Mainscreen();
+            f.Controls.Add(ms);
+            ms.Focus();
         }
 
         private void GameScreen_Load(object sender, EventArgs e){}
