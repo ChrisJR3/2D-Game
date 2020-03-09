@@ -28,6 +28,8 @@ namespace _2D_Game
         int boxSize = 20;
         int p1X, p1Y, p2X, p2Y;
         int wallWidth = 3;
+        int timer = 30000;
+        int secondsLeft;
         string p1Direction = "up";
         string p2Direction = "down";
 
@@ -101,6 +103,10 @@ namespace _2D_Game
 
         private void gameLoop_Tick(object sender, EventArgs e)
         {
+            //Decreases timer
+            timer = timer - 31;
+            secondsLeft = timer / 1000;
+            
             //moving the Green rider (Player 1)
             greenHero.Move(p1Direction);
 
@@ -206,6 +212,13 @@ namespace _2D_Game
             if (greenHeroRec.IntersectsWith(wall1)||greenHeroRec.IntersectsWith(wall2)||greenHeroRec.IntersectsWith(wall3)||greenHeroRec.IntersectsWith(wall4)){gameOver("Red Rider");}
             if(redHeroRec.IntersectsWith(wall1)||redHeroRec.IntersectsWith(wall2)||redHeroRec.IntersectsWith(wall3)||redHeroRec.IntersectsWith(wall4)){gameOver("Green Rider");}
 
+            //if timer reaces 30 seconds
+            if (timer == 0)
+            {
+                gameOver("Tie");
+                return;
+            }
+
             Refresh();
         }
 
@@ -257,6 +270,9 @@ namespace _2D_Game
             e.Graphics.FillRectangle(penBrush, this.Width-wallWidth, 0, wallWidth, this.Height);
             e.Graphics.FillRectangle(penBrush, 0, this.Height-wallWidth, this.Width, wallWidth);
             e.Graphics.FillRectangle(penBrush, 0, 0, wallWidth, this.Height);
+
+            //the timer
+            e.Graphics.DrawString("Time: " + secondsLeft, winnerFont, penBrush, 0, 0);
         }
     }
 }
