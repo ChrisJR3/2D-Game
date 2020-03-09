@@ -217,17 +217,17 @@ namespace _2D_Game
 
 
             //if greenHero (P1) wins
-            if (winner == "Green Rider") {e.DrawString("Green Rider Wins!", winnerFont, penBrush, this.Width/2, this.Height/2);}
+            if (winner == "Green Rider") {e.DrawString("Green Rider Wins!", winnerFont, penBrush, this.Width/2 - 10, this.Height/2);}
 
             //if redHero (P2) wins
-            else if (winner == "Red Rider") {e.DrawString("Red Rider Wins!", winnerFont, penBrush, this.Width / 2, this.Height / 2);}
+            else if (winner == "Red Rider") {e.DrawString("Red Rider Wins!", winnerFont, penBrush, this.Width / 2 - 10, this.Height / 2);}
 
             //if it is a tie
-            else {e.DrawString("It's a tie!", winnerFont, penBrush, this.Width / 2, this.Height / 2);}
+            else {e.DrawString("It's a tie!", winnerFont, penBrush, this.Width / 2 - 10, this.Height / 2);}
 
-            Thread.Sleep(1000);
+            Thread.Sleep(2000);
 
-            //Close screen and reopen Mainscreen
+            //Close gameScreen and reopen Mainscreen
             Form f = this.FindForm();
             f.Controls.Remove(this);
 
