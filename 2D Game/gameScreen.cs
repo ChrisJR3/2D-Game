@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
+using System.Media;
 
 namespace _2D_Game
 {
@@ -24,7 +25,7 @@ namespace _2D_Game
         Font winnerFont = new Font("Old Standard TT", 16, FontStyle.Bold);
 
         //creating variables that apply to both players
-        public static int playerSpeed = 7;
+        public static int playerSpeed = 5;
         int boxSize = 20;
         int p1X, p1Y, p2X, p2Y;
         int wallWidth = 3;
@@ -35,6 +36,12 @@ namespace _2D_Game
 
         Rectangle greenSafteyRectangle;
         Rectangle redSafteyRectangle;
+
+        //Sounds
+        SoundPlayer bikes = new SoundPlayer(Properties.Resources.Bike_Sound);
+        SoundPlayer crash = new SoundPlayer(Properties.Resources.Crash);
+        SoundPlayer tie = new SoundPlayer(Properties.Resources.Tie1);
+
 
         //creating the characters in the movement class
         movement greenHero;
@@ -212,12 +219,22 @@ namespace _2D_Game
             if (greenHeroRec.IntersectsWith(wall1)||greenHeroRec.IntersectsWith(wall2)||greenHeroRec.IntersectsWith(wall3)||greenHeroRec.IntersectsWith(wall4)){gameOver("Red Rider");}
             if(redHeroRec.IntersectsWith(wall1)||redHeroRec.IntersectsWith(wall2)||redHeroRec.IntersectsWith(wall3)||redHeroRec.IntersectsWith(wall4)){gameOver("Green Rider");}
 
-            //if timer reaces 30 seconds
-            if (timer == 0)
+            //if timer reaches 0
+            if (timer <= 0)
             {
                 gameOver("Tie");
                 return;
             }
+
+            //Playing bike sounds
+            if (secondsLeft == 30 || secondsLeft == 29 || secondsLeft == 12 || secondsLeft == 11)
+            {
+                bikes.Play();
+            }
+
+            //Moving the image boxes
+            greenHeroPictureBox.Location = new Point (greenHero.x, greenHero.y);
+            redHeroPictureBox.Location = new Point(redHero.x, redHero.y);
 
             Refresh();
         }
@@ -230,13 +247,25 @@ namespace _2D_Game
 
 
             //if greenHero (P1) wins
-            if (winner == "Green Rider") {e.DrawString("Green Rider Wins!", winnerFont, penBrush, this.Width/2 - 10, this.Height/2);}
+            if (winner == "Green Rider")
+            {
+                e.DrawString("Green Rider Wins!", winnerFont, penBrush, this.Width/2 - 10, this.Height/2);
+                crash.Play();
+            }
 
             //if redHero (P2) wins
-            else if (winner == "Red Rider") {e.DrawString("Red Rider Wins!", winnerFont, penBrush, this.Width / 2 - 10, this.Height / 2);}
+            else if (winner == "Red Rider")
+            {
+                e.DrawString("Red Rider Wins!", winnerFont, penBrush, this.Width / 2 - 10, this.Height / 2);
+                crash.Play();
+            }
 
             //if it is a tie
-            else {e.DrawString("It's a tie!", winnerFont, penBrush, this.Width / 2 - 10, this.Height / 2);}
+            else
+            {
+                e.DrawString("It's a tie!", winnerFont, penBrush, this.Width / 2 - 10, this.Height / 2);
+                tie.Play();
+            }
 
             Thread.Sleep(2000);
 
@@ -260,10 +289,41 @@ namespace _2D_Game
             foreach (Point t in redHero.playerTrail) {e.Graphics.FillRectangle(redBrush, t.X, t.Y, redHero.size/2, redHero.size/2);}
 
             //Green hero (p1)
-            e.Graphics.FillRectangle(greenHeroBrush, greenHero.x, greenHero.y, greenHero.size, greenHero.size);
+            if (p1Direction == "up")
+            {
+                greenHeroPictureBox.Image = Properties.Resources.Green_Forward;
+            }
+            else if (p1Direction == "right")
+            {
+                greenHeroPictureBox.Image = Properties.Resources.Green_Right;
+            }
+            else if (p1Direction == "down")
+            {
+                greenHeroPictureBox.Image = Properties.Resources.Green_Down;
+            }
+            else if (p1Direction == "left")
+            {
+                greenHeroPictureBox.Image = Properties.Resources.Green_Left;
+            }
 
             //Red hero (p2)
-            e.Graphics.FillRectangle(redHeroBrush, redHero.x, redHero.y, redHero.size, redHero.size);
+            //e.Graphics.FillRectangle(redHeroBrush, redHero.x, redHero.y, redHero.size, redHero.size);
+            if (p2Direction == "up")
+            {
+                redHeroPictureBox.Image = Properties.Resources.Red_Forward;
+            }
+            else if (p2Direction == "right")
+            {
+                redHeroPictureBox.Image = Properties.Resources.Red_Right;
+            }
+            else if (p2Direction == "down")
+            {
+                redHeroPictureBox.Image = Properties.Resources.Red_Down;
+            }
+            else if (p2Direction == "left")
+            {
+                redHeroPictureBox.Image = Properties.Resources.Red_Left;
+            }
 
             //Makes the walls
             e.Graphics.FillRectangle(penBrush, 0, 0, this.Width, wallWidth);

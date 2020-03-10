@@ -84,6 +84,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -97,6 +98,45 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Red-Down.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Red-Forward.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Green-Right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Green-Down.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Green-Left.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Green-Forward.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Red-Right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Red-Left.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Crash.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Tie.aiff" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Bike Sound.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Tie.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\GameStart.wav" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
