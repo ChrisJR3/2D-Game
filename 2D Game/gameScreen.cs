@@ -41,6 +41,7 @@ namespace _2D_Game
         SoundPlayer bikes = new SoundPlayer(Properties.Resources.Bike_Sound);
         SoundPlayer crash = new SoundPlayer(Properties.Resources.Crash);
         SoundPlayer tie = new SoundPlayer(Properties.Resources.Tie1);
+        SoundPlayer start = new SoundPlayer(Properties.Resources.GameStart);
 
 
         //creating the characters in the movement class
@@ -278,7 +279,10 @@ namespace _2D_Game
             ms.Focus();
         }
 
-        private void GameScreen_Load(object sender, EventArgs e){}
+        private void GameScreen_Load(object sender, EventArgs e)
+        {
+            start.Play();
+        }
 
         private void GameScreen_Paint(object sender, PaintEventArgs e)
         {
