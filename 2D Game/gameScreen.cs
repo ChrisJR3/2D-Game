@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -33,16 +33,19 @@ namespace _2D_Game
         int secondsLeft;
         string p1Direction = "up";
         string p2Direction = "down";
-
-        Rectangle greenSafteyRectangle;
-        Rectangle redSafteyRectangle;
+        string endGame;
+        
+        //Walls
+        Rectangle wall1;
+        Rectangle wall2;
+        Rectangle wall3;
+        Rectangle wall4;
 
         //Sounds
         SoundPlayer bikes = new SoundPlayer(Properties.Resources.Bike_Sound);
         SoundPlayer crash = new SoundPlayer(Properties.Resources.Crash);
         SoundPlayer tie = new SoundPlayer(Properties.Resources.Tie1);
         SoundPlayer start = new SoundPlayer(Properties.Resources.GameStart);
-
 
         //creating the characters in the movement class
         movement greenHero;
@@ -62,8 +65,18 @@ namespace _2D_Game
             p2X = this.Width - 50;
             p2Y = 20;
 
+            //creating the lists for each hero
             greenHero = new movement(p1X, p1Y, boxSize, playerSpeed);
             redHero = new movement(p2X, p2Y, boxSize, playerSpeed);
+
+            //Making the walls
+            wall1 = new Rectangle(0, 0, this.Width, wallWidth);
+            wall2 = new Rectangle(this.Width, 0, -wallWidth, this.Height);
+            wall3 = new Rectangle(0, this.Height, this.Width, -wallWidth);
+            wall4 = new Rectangle(0, 0, wallWidth, this.Height);
+
+            //Creates graphics
+            Graphics e = this.CreateGraphics();
 
             Cursor.Hide(); //hides cursor            
         }
@@ -125,100 +138,18 @@ namespace _2D_Game
             Rectangle greenHeroRec = new Rectangle(greenHero.x, greenHero.y, greenHero.size, greenHero.size);
             Rectangle redHeroRec = new Rectangle(redHero.x, redHero.y, redHero.size, redHero.size);
 
-            //Walls
-            Rectangle wall1 = new Rectangle(0, 0, this.Width, wallWidth);
-            Rectangle wall2 = new Rectangle(this.Width, 0, -wallWidth, this.Height);
-            Rectangle wall3 = new Rectangle(0, this.Height, this.Width, -wallWidth);
-            Rectangle wall4 = new Rectangle(0, 0, wallWidth, this.Height);
+            //Collision statement
+            greenHero.Collision(greenHeroRec, redHeroRec, p1Direction, p2Direction, greenHero.x, greenHero.y, greenHero.size, greenHero.playerTrail, redHero.x, redHero.y, redHero.size, redHero.playerTrail, wall1, wall2, wall3, wall4, endGame);
 
-            //If the players hit head on 
-            if (greenHeroRec.IntersectsWith(redHeroRec))
+            //if the game has ended:
+            if (endGame == "")
             {
-                gameOver("Tie");
-                return;
-            }  
-            //If player runs into another player's or their own trail
+               
+            }
             else
             {
-                //Creating the saftey rectangles for Green Rider trail (p1) 
-                if (p1Direction == "up")
-                {
-                    greenSafteyRectangle = new Rectangle(greenHero.x, greenHero.y + (greenHero.size / 4), greenHero.size, greenHero.size);
-                }
-                else if (p1Direction == "down")
-                {
-                    greenSafteyRectangle = new Rectangle(greenHero.x, greenHero.y - (greenHero.size / 4), greenHero.size, greenHero.size);
-                }
-                else if (p1Direction == "right")
-                {
-                    greenSafteyRectangle = new Rectangle(greenHero.x - (greenHero.size / 4), greenHero.y, greenHero.size, greenHero.size);
-                }
-                else
-                {
-                    greenSafteyRectangle = new Rectangle(greenHero.x + (greenHero.size / 4), greenHero.y, greenHero.size, greenHero.size);
-                }
-
-                // check for collisons with green trail
-                foreach (Point t in greenHero.playerTrail)
-                {
-                    Rectangle greenTrail = new Rectangle(t.X, t.Y, greenHero.size / 2, greenHero.size / 2);
-
-                    if (greenTrail.IntersectsWith(greenHeroRec) && !greenTrail.IntersectsWith(greenSafteyRectangle))
-                    {
-                        gameOver("Red Rider");
-                        return;
-                    }
-
-                    if (greenTrail.IntersectsWith(redHeroRec))
-                    {
-                        gameOver("Green Rider");
-                        return;
-                    }
-                }
-
-                //Creating the saftey rectangles for Red Rider trail (p2)
-                if (p2Direction == "up")
-                {
-                     redSafteyRectangle = new Rectangle(redHero.x, redHero.y + (redHero.size / 4), redHero.size, redHero.size);
-                }
-                else if (p2Direction == "down")
-                {
-                     redSafteyRectangle = new Rectangle(redHero.x, redHero.y - (redHero.size / 4), redHero.size, redHero.size);
-                }
-                else if (p2Direction == "right")
-                {
-                     redSafteyRectangle = new Rectangle(redHero.x - (redHero.size / 4), redHero.y, redHero.size, redHero.size);
-                }
-                else
-                {
-                     redSafteyRectangle = new Rectangle(redHero.x + (redHero.size / 4), redHero.y, redHero.size, redHero.size);
-                }
-
-                // check for collisons with red trail
-                foreach (Point t in redHero.playerTrail)
-                {
-                    Rectangle redTrail = new Rectangle(t.X, t.Y, redHero.size / 2, redHero.size / 2);
-
-                    //If red rider hits it's own trail
-                    if (redTrail.IntersectsWith(redHeroRec) && !redTrail.IntersectsWith(redSafteyRectangle))
-                    {
-                        gameOver("Green Rider");
-                        return;
-                    }
-
-                    //If green rider hits red rider's trail
-                    if (redTrail.IntersectsWith(greenHeroRec))
-                    {
-                        gameOver("Red Rider");
-                        return;
-                    }
-                }
-
+               gameOver(endGame);
             }
-            
-            //if either rider hits the walls
-            if (greenHeroRec.IntersectsWith(wall1)||greenHeroRec.IntersectsWith(wall2)||greenHeroRec.IntersectsWith(wall3)||greenHeroRec.IntersectsWith(wall4)){gameOver("Red Rider");}
-            if(redHeroRec.IntersectsWith(wall1)||redHeroRec.IntersectsWith(wall2)||redHeroRec.IntersectsWith(wall3)||redHeroRec.IntersectsWith(wall4)){gameOver("Green Rider");}
 
             //if timer reaches 0
             if (timer <= 0)
@@ -228,7 +159,7 @@ namespace _2D_Game
             }
 
             //Playing bike sounds
-            if (secondsLeft == 30 || secondsLeft == 29 || secondsLeft == 12 || secondsLeft == 11)
+            if (secondsLeft == 30 || secondsLeft == 12)
             {
                 bikes.Play();
             }
@@ -242,10 +173,11 @@ namespace _2D_Game
 
         public void gameOver(string winner)
         {
-            //creates Graphics
+            //Creates graphics
             Graphics e = this.CreateGraphics();
-            gameLoop.Enabled = false;
 
+            //Stops the game loop
+            gameLoop.Enabled = false;
 
             //if greenHero (P1) wins
             if (winner == "Green Rider")
@@ -329,10 +261,10 @@ namespace _2D_Game
                 redHeroPictureBox.Image = Properties.Resources.Red_Left;
             }
 
-            //Makes the walls
+            //Draws the walls
             e.Graphics.FillRectangle(penBrush, 0, 0, this.Width, wallWidth);
-            e.Graphics.FillRectangle(penBrush, this.Width-wallWidth, 0, wallWidth, this.Height);
-            e.Graphics.FillRectangle(penBrush, 0, this.Height-wallWidth, this.Width, wallWidth);
+            e.Graphics.FillRectangle(penBrush, this.Width - wallWidth, 0, wallWidth, this.Height);
+            e.Graphics.FillRectangle(penBrush, 0, this.Height - wallWidth, this.Width, wallWidth);
             e.Graphics.FillRectangle(penBrush, 0, 0, wallWidth, this.Height);
 
             //the timer
